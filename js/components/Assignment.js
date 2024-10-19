@@ -3,22 +3,35 @@ import CreateForm from "./CreateForm.js";
 export default {
     components:{AssingmentList,CreateForm},
 
-    template:`
-    <assingment-list :assignments="filters.inProgress" title="in progress"></assingment-list>
-    <assingment-list :assignments="filters.complete" title="complete"></assingment-list>
-    <create-form @add="add"></create-form>
-    
-
+    template:`<div class="flex gap-8">
+    <assingment-list :assignments="filters.inProgress" title="in progress">
+          <create-form @add="add"></create-form>
+    </assingment-list>
+    <assingment-list 
+    v-if="showCompelete"
+    :assignments="filters.complete" 
+    title="complete" 
+    hide-toggle 
+    @toggle="showCompelete = !showCompelete"></assingment-list>
+    </div>
 `,
 
     data() {
         return {
             assignments: [
-                { name: 'Finish project', complete: false, id: 1,tag:'math' },
-                { name: 'Read Chapter 4', complete: false, id: 2,tag: 'math' },
-                { name: 'Turn in Homework', complete: false, id: 3, tag:'science' },
+
             ],
+            showCompelete:true
         }
+    },
+    created(){
+
+        fetch('http://localhost:3001/assignment')
+            .then($response => $response.json())
+            .then(data => {
+             this.assignments = data
+            })
+
     },
 
     computed: {
